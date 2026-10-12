@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block header %}Profile{% endblock %}
+{% block content %}
+<section class="card">
+    <h2>{{ profile_user.get_full_name }}</h2>
+    <dl class="details">
+        <div><dt>Email</dt><dd>{{ profile_user.email }}</dd></div>
+        <div><dt>Role</dt><dd>{{ profile_user.get_role_display }}</dd></div>
+        <div><dt>Phone</dt><dd>{{ profile_user.phone|default:"—" }}</dd></div>
+    </dl>
+</section>
+{% endblock %}

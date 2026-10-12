@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ child.full_name }}{% endblock %}
+{% block header %}{{ child.full_name }}{% endblock %}
+{% block content %}
+<section class="card">
+    {% if request.user.is_admin %}<a class="btn" href="{% url 'children:update' child.pk %}">Edit</a>{% endif %}
+    <dl class="details">
+        <div><dt>Group</dt><dd>{{ child.group.name }}</dd></div>
+        <div><dt>Date of birth</dt><dd>{{ child.date_of_birth }}</dd></div>
+        <div><dt>Gender</dt><dd>{{ child.get_gender_display }}</dd></div>
+        <div><dt>Enrollment</dt><dd>{{ child.enrollment_date }}</dd></div>
+        <div><dt>Parents</dt><dd>{% for p in child.parents.all %}{{ p.get_full_name }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</dd></div>
+        <div><dt>Emergency</dt><dd>{{ child.emergency_contact_name }} {{ child.emergency_contact_phone }}</dd></div>
+        <div><dt>Allergies</dt><dd>{{ child.allergies|default:"None recorded" }}</dd></div>
+        {% if not request.user.is_parent %}
+        <div><dt>Medical notes</dt><dd>{{ child.medical_notes|default:"—" }}</dd></div>
+        <div><dt>Address</dt><dd>{{ child.address|default:"—" }}</dd></div>
+        {% endif %}
+    </dl>
+</section>
+{% endblock %}

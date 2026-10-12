@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Attendance{% endblock %}
+{% block header %}Attendance{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>Attendance</h1>
+    {% if request.user.is_admin or request.user.is_teacher %}
+        <div class="actions">
+            <a class="btn" href="{% url 'attendance:create' %}">Add record</a>
+            <a class="btn btn-primary" href="{% url 'attendance:bulk' %}">Group marking</a>
+        </div>
+    {% endif %}
+</div>
+<form class="filters" method="get">
+    <input class="input" type="date" name="date" value="{{ selected_date }}">
+    <select class="input" name="group">
+        <option value="">All groups</option>
+        {% for group in groups %}
+            <option value="{{ group.pk }}" {% if selected_group == group.pk|stringformat:"s" %}selected{% endif %}>{{ group.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn" type="submit">Filter</button>
+</form>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Child</th><th>Group</th><th>Status</th><th>Arrival</th><th>Note</th><th></th></tr></thead>
+        <tbody>
+        {% for row in records %}
+            <tr>
+                <td>{{ row.child.full_name }}</td>
+                <td>{{ row.child.group.name }}</td>
+                <td>{{ row.get_status_display }}</td>
+                <td>{{ row.arrival_time|default:"—" }}</td>
+                <td>{{ row.note|default:"—" }}</td>
+                <td>{% if request.user.is_admin or request.user.is_teacher %}<a href="{% url 'attendance:update' row.pk %}">Edit</a>{% endif %}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="empty">No attendance recorded for this date.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

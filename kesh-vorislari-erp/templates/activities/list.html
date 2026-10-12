@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Activities{% endblock %}
+{% block header %}Activities{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>Activities</h1>
+    {% if request.user.is_admin or request.user.is_teacher %}
+        <a class="btn btn-primary" href="{% url 'activities:create' %}">Add activity</a>
+    {% endif %}
+</div>
+<form class="filters" method="get">
+    <input class="input" type="date" name="date" value="{{ selected_date }}">
+    <button class="btn" type="submit">Filter</button>
+</form>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Title</th><th>Type</th><th>Group</th><th>Date</th><th>Time</th></tr></thead>
+        <tbody>
+        {% for activity in activities %}
+            <tr>
+                <td><a href="{% url 'activities:detail' activity.pk %}">{{ activity.title }}</a></td>
+                <td>{{ activity.get_activity_type_display }}</td>
+                <td>{{ activity.group.name }}</td>
+                <td>{{ activity.date }}</td>
+                <td>{{ activity.start_time }}–{{ activity.end_time }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="empty">No activities found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ activity.title }}{% endblock %}
+{% block header %}{{ activity.title }}{% endblock %}
+{% block content %}
+<section class="card">
+    {% if request.user.is_admin or request.user.is_teacher %}<a class="btn" href="{% url 'activities:update' activity.pk %}">Edit</a>{% endif %}
+    <dl class="details">
+        <div><dt>Type</dt><dd>{{ activity.get_activity_type_display }}</dd></div>
+        <div><dt>Group</dt><dd>{{ activity.group.name }}</dd></div>
+        <div><dt>Teacher</dt><dd>{{ activity.teacher.get_full_name|default:"—" }}</dd></div>
+        <div><dt>When</dt><dd>{{ activity.date }} {{ activity.start_time }}–{{ activity.end_time }}</dd></div>
+        <div><dt>Location</dt><dd>{{ activity.location|default:"—" }}</dd></div>
+        <div><dt>Notes</dt><dd>{{ activity.notes|default:"—" }}</dd></div>
+    </dl>
+    <p>{{ activity.description }}</p>
+</section>
+{% endblock %}

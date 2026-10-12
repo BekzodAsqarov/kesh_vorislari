@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ erp_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-mark">KV</span>
+                <div>
+                    <strong>Kesh Vorislari</strong>
+                    <small>Kindergarten ERP</small>
+                </div>
+            </div>
+            <nav>
+                {% for item in nav_items %}
+                    <a href="{% url item.url_name %}" class="{% if request.resolver_match.namespace == item.namespace %}active{% endif %}">{{ item.label }}</a>
+                {% endfor %}
+            </nav>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <button class="nav-toggle" type="button" data-nav-toggle aria-label="Open menu">Menu</button>
+                <div class="topbar-title">{% block header %}Dashboard{% endblock %}</div>
+                <div class="user-chip">
+                    <span>{{ request.user.get_full_name }} · {{ request.user.get_role_display }}</span>
+                    <a href="{% url 'accounts:profile' %}">Profile</a>
+                    <a href="{% url 'accounts:logout' %}">Logout</a>
+                </div>
+            </header>
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for message in messages %}
+                        <div class="flash flash-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

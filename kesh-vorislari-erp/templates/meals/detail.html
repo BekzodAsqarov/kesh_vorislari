@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Menu {{ menu.date }}{% endblock %}
+{% block header %}Menu {{ menu.date }}{% endblock %}
+{% block content %}
+<section class="card">
+    {% if request.user.is_admin %}<a class="btn" href="{% url 'meals:update' menu.pk %}">Edit</a>{% endif %}
+    <p>{{ menu.notes }}</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Category</th><th>Dish</th><th>Allergens</th><th>Portion</th></tr></thead>
+            <tbody>
+            {% for item in menu.items.all %}
+                <tr><td>{{ item.get_category_display }}</td><td>{{ item.name }}</td><td>{{ item.allergens|default:"—" }}</td><td>{{ item.portion|default:"—" }}</td></tr>
+            {% empty %}
+                <tr><td colspan="4" class="empty">No items on this menu.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
