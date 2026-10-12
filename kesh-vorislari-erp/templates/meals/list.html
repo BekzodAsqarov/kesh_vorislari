@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Meals{% endblock %}
+{% block header %}Meals & menus{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>Weekly menu ({{ start }} – {{ end }})</h1>
+    {% if request.user.is_admin %}
+        <div class="actions">
+            <a class="btn" href="{% url 'meals:meal-create' %}">Add dish</a>
+            <a class="btn btn-primary" href="{% url 'meals:create' %}">Create menu</a>
+        </div>
+    {% endif %}
+</div>
+<div class="card-grid">
+    {% for menu in menus %}
+        <a class="tile" href="{% url 'meals:detail' menu.pk %}">
+            <h2>{{ menu.date }}</h2>
+            <ul class="plain">
+                {% for item in menu.items.all %}
+                    <li>{{ item.get_category_display }}: {{ item.name }}</li>
+                {% empty %}
+                    <li class="muted">No items</li>
+                {% endfor %}
+            </ul>
+        </a>
+    {% empty %}
+        <p class="empty">No menus this week.</p>
+    {% endfor %}
+</div>
+{% if request.user.is_admin %}
+<section class="card">
+    <h2>Dish catalog</h2>
+    <ul class="plain">{% for meal in catalog %}<li>{{ meal.get_category_display }} · {{ meal.name }}</li>{% empty %}<li class="muted">Catalog is empty.</li>{% endfor %}</ul>
+</section>
+{% endif %}
+{% endblock %}

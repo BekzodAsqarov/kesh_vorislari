@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Group attendance{% endblock %}
+{% block header %}Group attendance{% endblock %}
+{% block content %}
+<form class="filters" method="get">
+    <input class="input" type="date" name="date" value="{{ selected_date }}">
+    <select class="input" name="group">
+        {% for group in groups %}
+            <option value="{{ group.pk }}" {% if selected_group == group.pk|stringformat:"s" %}selected{% endif %}>{{ group.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn" type="submit">Load children</button>
+</form>
+<form method="post" class="card">
+    {% csrf_token %}
+    <input type="hidden" name="date" value="{{ selected_date }}">
+    <input type="hidden" name="group" value="{{ selected_group }}">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Child</th><th>Status</th><th>Note</th></tr></thead>
+            <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>{{ row.child.full_name }}</td>
+                    <td>
+                        <select class="input" name="status_{{ row.child.pk }}">
+                            {% for value, label in statuses %}
+                                <option value="{{ value }}" {% if row.record and row.record.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input class="input" name="note_{{ row.child.pk }}" value="{{ row.record.note|default:'' }}"></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="3" class="empty">Select a group to mark attendance.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if rows %}<button class="btn btn-primary" type="submit">Save group attendance</button>{% endif %}
+</form>
+{% endblock %}

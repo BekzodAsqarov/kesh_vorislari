@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Report {{ report.date }}{% endblock %}
+{% block header %}{{ report.child.full_name }} · {{ report.date }}{% endblock %}
+{% block content %}
+<section class="card">
+    {% if request.user.is_admin or request.user.is_teacher %}<a class="btn" href="{% url 'reports:update' report.pk %}">Edit</a>{% endif %}
+    <dl class="details">
+        <div><dt>Mood</dt><dd>{{ report.get_mood_display }}</dd></div>
+        <div><dt>Breakfast</dt><dd>{{ report.get_breakfast_status_display }}</dd></div>
+        <div><dt>Lunch</dt><dd>{{ report.get_lunch_status_display }}</dd></div>
+        <div><dt>Snack</dt><dd>{{ report.get_snack_status_display }}</dd></div>
+        <div><dt>Nap</dt><dd>{{ report.nap_duration|default:"—" }}</dd></div>
+        <div><dt>Participation</dt><dd>{{ report.get_activity_participation_display }}</dd></div>
+        <div><dt>Note</dt><dd>{{ report.note|default:"—" }}</dd></div>
+    </dl>
+</section>
+{% endblock %}

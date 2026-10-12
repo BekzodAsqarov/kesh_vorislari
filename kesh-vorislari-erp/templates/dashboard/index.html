@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Kesh Vorislari ERP</h1>
+    <p>{{ stats.today }} · live data from the kindergarten database</p>
+</section>
+<div class="stat-grid">
+    <article class="stat"><span>Children</span><strong>{{ stats.children_count }}</strong></article>
+    <article class="stat"><span>Groups</span><strong>{{ stats.groups_count }}</strong></article>
+    <article class="stat"><span>Teachers</span><strong>{{ stats.teachers_count }}</strong></article>
+    <article class="stat"><span>Present</span><strong>{{ stats.attendance.present }}</strong></article>
+    <article class="stat"><span>Absent</span><strong>{{ stats.attendance.absent }}</strong></article>
+    <article class="stat"><span>Late</span><strong>{{ stats.attendance.late }}</strong></article>
+</div>
+<div class="grid-2">
+    <section class="card">
+        <h2>Today's activities</h2>
+        <ul class="plain">
+            {% for activity in stats.activities %}
+                <li><strong>{{ activity.title }}</strong> · {{ activity.group.name }} · {{ activity.start_time }}</li>
+            {% empty %}
+                <li class="muted">No activities scheduled today.</li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section class="card">
+        <h2>Today's menu</h2>
+        {% if stats.menu %}
+            <ul class="plain">
+                {% for item in stats.menu.items.all %}
+                    <li><strong>{{ item.get_category_display }}</strong> · {{ item.name }}</li>
+                {% empty %}
+                    <li class="muted">Menu exists but has no items yet.</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">No menu published for today.</p>
+        {% endif %}
+    </section>
+</div>
+<section class="card">
+    <h2>Recent daily reports</h2>
+    <ul class="plain">
+        {% for report in stats.recent_reports %}
+            <li>{{ report.date }} · {{ report.child }} · {{ report.get_mood_display }}</li>
+        {% empty %}
+            <li class="muted">No recent reports.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

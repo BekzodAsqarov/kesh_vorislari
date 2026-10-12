@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ group.name }}{% endblock %}
+{% block header %}{{ group.name }}{% endblock %}
+{% block content %}
+<section class="card">
+    {% if request.user.is_admin %}<a class="btn" href="{% url 'groups:update' group.pk %}">Edit</a>{% endif %}
+    <p>{{ group.description }}</p>
+    <p>Room {{ group.room|default:"—" }} · ages {{ group.age_min }}–{{ group.age_max }}</p>
+    <h3>Teachers</h3>
+    <ul>{% for t in group.teachers.all %}<li>{{ t.get_full_name }}</li>{% empty %}<li class="muted">No teachers assigned.</li>{% endfor %}</ul>
+    <h3>Children</h3>
+    <ul>{% for child in group.children.all %}<li><a href="{% url 'children:detail' child.pk %}">{{ child.full_name }}</a></li>{% empty %}<li class="muted">No children in this group.</li>{% endfor %}</ul>
+</section>
+{% endblock %}

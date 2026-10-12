@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Daily reports{% endblock %}
+{% block header %}Daily reports{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>Daily reports</h1>
+    {% if request.user.is_admin or request.user.is_teacher %}
+        <a class="btn btn-primary" href="{% url 'reports:create' %}">New report</a>
+    {% endif %}
+</div>
+<form class="filters" method="get">
+    <input class="input" type="date" name="date" value="{{ selected_date }}">
+    <button class="btn" type="submit">Filter</button>
+</form>
+<div class="table-wrap">
+    <table>
+        <thead><tr><th>Date</th><th>Child</th><th>Mood</th><th>Participation</th></tr></thead>
+        <tbody>
+        {% for report in reports %}
+            <tr>
+                <td>{{ report.date }}</td>
+                <td><a href="{% url 'reports:detail' report.pk %}">{{ report.child.full_name }}</a></td>
+                <td>{{ report.get_mood_display }}</td>
+                <td>{{ report.get_activity_participation_display }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="empty">No reports found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

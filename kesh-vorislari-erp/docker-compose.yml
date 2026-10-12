@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kesh_vorislari}
+      POSTGRES_USER: ${POSTGRES_USER:-kesh}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kesh}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kesh} -d ${POSTGRES_DB:-kesh_vorislari}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-kesh}:${POSTGRES_PASSWORD:-kesh}@db:5432/${POSTGRES_DB:-kesh_vorislari}
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.development}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: python manage.py runserver 0.0.0.0:8000
+
+volumes:
+  postgres_data:

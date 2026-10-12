@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Groups{% endblock %}
+{% block header %}Groups{% endblock %}
+{% block content %}
+<div class="page-head">
+    <h1>Groups</h1>
+    {% if request.user.is_admin %}<a class="btn btn-primary" href="{% url 'groups:create' %}">Add group</a>{% endif %}
+</div>
+<div class="card-grid">
+    {% for group in groups %}
+        <a class="tile" href="{% url 'groups:detail' group.pk %}">
+            <h2>{{ group.name }}</h2>
+            <p>{{ group.room|default:"No room" }} · ages {{ group.age_min }}–{{ group.age_max }}</p>
+            <p class="muted">{{ group.children.count }} children</p>
+        </a>
+    {% empty %}
+        <p class="empty">No groups available.</p>
+    {% endfor %}
+</div>
+{% endblock %}
